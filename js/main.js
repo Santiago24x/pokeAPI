@@ -20,7 +20,7 @@ async function obtenerUrls(cantidad, tipo = null) {
 
 async function mostrarDatos(cantidad, tipo = null) {
     const listaPokemones = document.getElementById('listaPokemon');
-    listaPokemones.innerHTML = ''; // Limpiamos la lista antes de agregar nuevos elementos
+    listaPokemones.innerHTML = '';
 
     const urls = await obtenerUrls(cantidad, tipo);
 
@@ -37,7 +37,6 @@ function mostrarPokemon(data) {
     const div = document.createElement("div");
     div.classList.add("pokemon");
 
-    // Obtenemos la URL de la imagen o el URL alternativo si no está disponible
     const imagenUrl = data.sprites.other['official-artwork'].front_default || 'https://i.pinimg.com/originals/f8/33/5a/f8335abfc56c2a665ca700c0c24a68a5.png';
 
     div.innerHTML = `
@@ -55,6 +54,19 @@ function mostrarPokemon(data) {
             </div>
         </div> 
     `;
+
+    // Agregar evento de clic al div
+    div.addEventListener('click', () => {
+        const habilidades = data.abilities.map(ability => ability.ability.name).join(', ');
+
+        Swal.fire({
+            title: 'Habilidades',
+            text: habilidades,
+            icon: 'info',
+            confirmButtonText: 'Entendido'
+        });
+    });
+
     listaPokemon.append(div);
 }
 
@@ -66,7 +78,6 @@ document.getElementById('formCantidad').addEventListener('submit', async (e) => 
     }
 });
 
-// Agregar el evento de clic a los botones de tipo
 document.querySelectorAll('.btn-header').forEach(btn => {
     btn.addEventListener('click', async () => {
         const tipo = btn.id;
