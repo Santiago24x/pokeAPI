@@ -50,7 +50,7 @@ async function guardarCambiosEnAPI(id, cambiosStats) {
 
 
 async function guardarDatosMockAPI(datos) {
-    const url = `https://650b8803dfd73d1fab0a0b24.mockapi.io/pokemon_data/}`;
+    const url = `https://650b8803dfd73d1fab0a0b24.mockapi.io/pokemon_data`;
     const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -182,12 +182,13 @@ document.querySelectorAll('.btn-header').forEach(btn => {
 document.addEventListener('input', async (e) => {
     if (e.target.classList.contains('stat-slider')) {
         const statSlider = e.target;
-        // const statValue = parseInt(statSlider.value);
-        // const statName = statSlider.id.split('-')[2];
-        // const baseStatElement = statSlider.parentElement.querySelector('.base_stat');
-        // baseStatElement.textContent = statValue;
-        // cambiosStats[statName] = statValue;
+        const statValue = parseInt(statSlider.value);
+        const statName = statSlider.id.split('-')[2];
+        const baseStatElement = statSlider.parentElement.querySelector('.base_stat');
+        baseStatElement.textContent = statValue;
+        cambiosStats[statName] = statValue;
 
+        
         // const pokemonId = obtenerIdDelPokemon();
         // guardarCambiosEnAPI(pokemonId, cambiosStats);
     }
@@ -201,9 +202,13 @@ document.addEventListener("click", async(e)=> {
         });
         let datos = {
             name: e.target.dataset.namepok,
-            stats: inputs
-            
+            stats: Array.from(inputs).map(input => ({
+                name: input.id.split('-')[2],
+                value: parseInt(input.value)
+            }))
         };
-        console.log(datos);
+
+        // Llamar a la función para guardar datos en el mockapi
+        await guardarDatosMockAPI(datos);
     }
-})
+});
