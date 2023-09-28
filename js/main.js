@@ -22,7 +22,7 @@ async function obtenerUrls(cantidad, tipo = null) {
 
 async function mostrarDatos(cantidad, tipo = null) {
     const listaPokemones = document.getElementById('listaPokemon');
-    listaPokemones.innerHTML = ''; // Limpiamos la lista antes de agregar nuevos elementos
+    listaPokemones.innerHTML = '';
 
     const urls = await obtenerUrls(cantidad, tipo);
 
@@ -95,6 +95,19 @@ function mostrarPokemon(data) {
             </div>
         </div> 
     `;
+
+    // Agregar evento de clic al div
+    div.addEventListener('click', () => {
+        const habilidades = data.abilities.map(ability => ability.ability.name).join(', ');
+
+        Swal.fire({
+            title: 'Habilidades',
+            text: habilidades,
+            icon: 'info',
+            confirmButtonText: 'Entendido'
+        });
+    });
+
     listaPokemon.append(div);
     div.addEventListener("click", async () => {
 
