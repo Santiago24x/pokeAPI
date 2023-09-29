@@ -256,6 +256,61 @@ main {
     box-shadow: 0 0 2rem rgba(0, 0, 0, .25);
 }
 
+/* Estilos de los sliders */
+.stat-slider {
+    width: 100%;
+    height: 20px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: #ddd;
+    outline: none;
+    opacity: 0.7;
+    transition: opacity .2s;
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+  
+  /* Cambia el estilo del slider cuando está activo (seleccionado) */
+  .stat-slider:hover {
+    opacity: 1;
+  }
+  
+  /* Estilos del riel del slider (track) */
+  .stat-slider::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 20px;
+    cursor: pointer;
+    animate: 0.2s;
+    background: #ddd;
+    border-radius: 10px;
+  }
+  
+  /* Simula el efecto de llenado */
+  .stat-slider::-moz-range-track {
+    width: 100%;
+    height: 20px;
+    cursor: pointer;
+    animate: 0.2s;
+    background: #ddd;
+    border-radius: 10px;
+  }
+  
+  /* Deshabilita el punto en el centro */
+  .stat-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 0;
+    height: 0;
+  }
+  
+  .stat-slider::-moz-range-thumb {
+    -moz-appearance: none;
+    appearance: none;
+    width: 0;
+    height: 0;
+  }
+  
+
 
 .normal {
     background-color: var(--type-normal);

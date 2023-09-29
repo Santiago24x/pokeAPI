@@ -36,7 +36,7 @@ async function mostrarDatos(cantidad, tipo = null) {
 }
 
 async function guardarCambiosEnAPI(id, cambiosStats) {
-    const url = `https://650b8803dfd73d1fab0a0b24.mockapi.io/pokemon_data/${id}`;
+    const url = `${API_ENDPOINT}/${id}`;
     const response = await fetch(url, {
         method: 'PUT',
         headers: {
@@ -50,7 +50,7 @@ async function guardarCambiosEnAPI(id, cambiosStats) {
 
 
 async function guardarDatosMockAPI(datos) {
-    const url = `https://650b8803dfd73d1fab0a0b24.mockapi.io/pokemon_data`;
+    const url = `${API_ENDPOINT}`;
     const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -152,12 +152,20 @@ function mostrarPokemon(data) {
     });
 }
 
-function guardarCambios() {
+async function guardarCambios() {
     const jsonCambios = JSON.stringify(cambiosStats);
     console.log(jsonCambios);
 
     const pokemonId = obtenerIdDelPokemon();
-    guardarCambiosEnAPI(pokemonId, cambiosStats);
+
+    const datosExistentes = await obtenerDatosDesdeAPI(pokemonId);
+
+    if (datosExistentes) {
+        const nuevosDatos = { ...datosExistentes, stats: cambiosStats };
+        await guardarCambiosEnAPI(pokemonId, nuevosDatos);
+    } else {
+        await guardarDatosMockAPI({ id: pokemonId, stats: cambiosStats });
+    }
 }
 
 document.getElementById('formCantidad').addEventListener('submit', async (e) => {
@@ -187,19 +195,12 @@ document.addEventListener('input', async (e) => {
         const baseStatElement = statSlider.parentElement.querySelector('.base_stat');
         baseStatElement.textContent = statValue;
         cambiosStats[statName] = statValue;
-
-        
-        // const pokemonId = obtenerIdDelPokemon();
-        // guardarCambiosEnAPI(pokemonId, cambiosStats);
     }
 });
 
 document.addEventListener("click", async(e)=> {
     if(e.target.classList.contains("btn-guardar-cambios")) {
         let inputs = document.querySelectorAll(".stat-slider");
-        inputs.forEach(input => {
-            console.log(input.value);
-        });
         let datos = {
             name: e.target.dataset.namepok,
             stats: Array.from(inputs).map(input => ({
@@ -208,7 +209,9 @@ document.addEventListener("click", async(e)=> {
             }))
         };
 
-        // Llamar a la función para guardar datos en el mockapi
         await guardarDatosMockAPI(datos);
+
+        const pokemonId = obtenerIdDelPokemon();
+        mostrarDatos(1, pokemonId);
     }
 });
