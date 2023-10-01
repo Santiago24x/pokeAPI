@@ -1,78 +1,47 @@
-const API_ENDPOINT = 'https://650b8803dfd73d1fab0a0b24.mockapi.io/pokemon_data';
-const listaPokemon = document.querySelector("#listaPokemon");
-const cambiosStats = {};
+const API_ENDPOINT = 'https://pokeapi.co/api/v2'; // API de pokemones
+const MOCK_API_ENDPOINT = 'https://650b8803dfd73d1fab0a0b24.mockapi.io/pokemon_data';
+const listaPokemon = document.querySelector("#listaPokemon"); // Lista de pokemones en el DOM
 
+
+//Funcion para obtener los pokemones dependiendo si es por tipo o cantidad
 async function obtenerUrls(cantidad, tipo = null) {
     let URL;
     if (tipo) {
-        URL = `https://pokeapi.co/api/v2/type/${tipo}`;
+        URL = `${API_ENDPOINT}/type/${tipo}`;
     } else {
-        URL = `https://pokeapi.co/api/v2/pokemon/?limit=${cantidad}`;
+        URL = `${API_ENDPOINT}/pokemon/?limit=${cantidad}`;
     }
 
+    // Obtener el json de los pokemones
     const respuesta = await fetch(URL);
     const datos = await respuesta.json();
+    console.log(datos);
 
+    // Obtener los urls de los pokemones
     if (tipo) {
         return datos.pokemon.map(pokemon => pokemon.pokemon.url);
     } else {
-        return datos.results.map(pokemon => pokemon.url);
+        return datos.results.map(pokemon => pokemon.url); 
     }
 }
+    
 
 async function mostrarDatos(cantidad, tipo = null) {
     const listaPokemones = document.getElementById('listaPokemon');
     listaPokemones.innerHTML = '';
 
     const urls = await obtenerUrls(cantidad, tipo);
-
+    console.log(urls);
     const obtenerDatos = async (url) => {
         const respuesta = await fetch(url);
         const datos = await respuesta.json();
+        console.log(datos);
         mostrarPokemon(datos);
     };
-
+    
     urls.forEach(obtenerDatos);
 }
 
-async function guardarCambiosEnAPI(id, cambiosStats) {
-    const url = `${API_ENDPOINT}/${id}`;
-    const response = await fetch(url, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(cambiosStats)
-    });
-    const data = await response.json();
-    return data;
-}
-
-
-async function guardarDatosMockAPI(datos) {
-    const url = `${API_ENDPOINT}`;
-    const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(datos)
-    });
-    const data = await response.json();
-    return data;
-}
-
-async function obtenerDatosDesdeAPI(id) {
-    const url = `${API_ENDPOINT}/${id}`;
-    const response = await fetch(url);
-    const data = await response.json();
-    return data;
-}
-
-function obtenerIdDelPokemon() {
-    const pokemonId = document.querySelector('.pokemon-id').textContent.slice(1);
-    return parseInt(pokemonId);
-}
 
 function mostrarPokemon(data) {
     const div = document.createElement("div");
@@ -96,31 +65,20 @@ function mostrarPokemon(data) {
         </div> 
     `;
 
-    // Agregar evento de clic al div
-    div.addEventListener('click', () => {
-        const habilidades = data.abilities.map(ability => ability.ability.name).join(', ');
-
-        Swal.fire({
-            title: 'Habilidades',
-            text: habilidades,
-            icon: 'info',
-            confirmButtonText: 'Entendido'
-        });
-    });
-
     listaPokemon.append(div);
+
+    //!Preguntarle al viejo green el como sabe que div se esta clickando
     div.addEventListener("click", async () => {
-
         const tipos = data.types.map(type => `<p class="tipo ${type.type.name}">${type.type.name.toUpperCase()}</p>`).join('');
-
         let img = data.sprites.other["official-artwork"].front_default;
         let defaultImg = "https://i.pinimg.com/originals/f8/33/5a/f8335abfc56c2a665ca700c0c24a68a5.png";
-
+        
         const stats = data.stats.map(stat => `
             <div class="stat-bar-container">
                 <input type="range" class="stat-slider" id="stat-slider-${stat.stat.name}" value="${stat.base_stat}" min="0" max="255">
                 <span class="stat_poke">
-                    <b class="base_stat" contenteditable="true" id="stat_${stat.stat.name}">${stat.base_stat}</b> <b class="name_stat">${stat.stat.name}</b>
+                    <b class="base_stat" contenteditable="true" id="stat_${stat.stat.name}">${stat.base_stat}</b> 
+                    <b class="name_stat">${stat.stat.name}</b>
                 </span>
             </div>
         `).join('');
@@ -141,40 +99,55 @@ function mostrarPokemon(data) {
                     <div class="pokeStats">
                         ${stats}
                     </div>  
-                    <button class="btn-guardar-cambios"  data-namepok="${data.name}">Guardar</button>
+                    <button id="guardar" class="btn-guardar">Guardar</button>
                 </div>`,
             width: "auto",
             background: "white",
             padding: "5rem",
-            
             showConfirmButton: false,
         });
     });
 }
 
-async function guardarCambios() {
-    const jsonCambios = JSON.stringify(cambiosStats);
-    console.log(jsonCambios);
 
-    const pokemonId = obtenerIdDelPokemon();
+const cambiosStats = {};
+document.addEventListener('input', async (e) => {
+    if (e.target.classList.contains('stat-slider')) {
+        const statSlider = e.target;
+        const statValue = parseInt(statSlider.value);
+        const statName = statSlider.id.split('-')[2];
+        cambiosStats[statName] = statValue;
 
-    const datosExistentes = await obtenerDatosDesdeAPI(pokemonId);
-
-    if (datosExistentes) {
-        const nuevosDatos = { ...datosExistentes, stats: cambiosStats };
-        await guardarCambiosEnAPI(pokemonId, nuevosDatos);
-    } else {
-        await guardarDatosMockAPI({ id: pokemonId, stats: cambiosStats });
+        // Actualiza el valor de la estadística en el HTML
+        const statElement = document.getElementById(`stat_${statName}`);
+        statElement.textContent = statValue;
     }
-}
+});
 
-document.getElementById('formCantidad').addEventListener('submit', async (e) => {
+
+const formCantidad = document.getElementById('formCantidad');
+const inputCantidad = document.getElementById('cantidad');
+
+formCantidad.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const cantidad = document.getElementById('cantidad').value;
-    if (cantidad && !isNaN(cantidad) && cantidad > 0) {
+
+    let cantidad = inputCantidad.value;
+
+    if (!cantidad) {
+        cantidad = 50;
+    }
+    if (!isNaN(cantidad) && cantidad > 0) {
         mostrarDatos(Number(cantidad));
     }
 });
+inputCantidad.addEventListener('input', () => {
+    if (!inputCantidad.value) {
+        location.reload();
+    }
+});
+// Iniciar la aplicación mostrando automáticamente los primeros 50 Pokémon
+mostrarDatos(50);
+
 
 document.querySelectorAll('.btn-header').forEach(btn => {
     btn.addEventListener('click', async () => {
@@ -187,31 +160,5 @@ document.querySelectorAll('.btn-header').forEach(btn => {
     });
 });
 
-document.addEventListener('input', async (e) => {
-    if (e.target.classList.contains('stat-slider')) {
-        const statSlider = e.target;
-        const statValue = parseInt(statSlider.value);
-        const statName = statSlider.id.split('-')[2];
-        const baseStatElement = statSlider.parentElement.querySelector('.base_stat');
-        baseStatElement.textContent = statValue;
-        cambiosStats[statName] = statValue;
-    }
-});
 
-document.addEventListener("click", async(e)=> {
-    if(e.target.classList.contains("btn-guardar-cambios")) {
-        let inputs = document.querySelectorAll(".stat-slider");
-        let datos = {
-            name: e.target.dataset.namepok,
-            stats: Array.from(inputs).map(input => ({
-                name: input.id.split('-')[2],
-                value: parseInt(input.value)
-            }))
-        };
 
-        await guardarDatosMockAPI(datos);
-
-        const pokemonId = obtenerIdDelPokemon();
-        mostrarDatos(1, pokemonId);
-    }
-});
