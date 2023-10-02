@@ -69,7 +69,7 @@ header {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100px; 
+    width: 280px;
 }
 
 .nav-list {
@@ -92,8 +92,8 @@ header {
 }
 
 .btn-header:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 2rem rgba(0, 0, 0, .25);
+    background-color: #003A70; /* Azul */
+    color: #FFCB05; /* Amarillo */
 }
 
 main {
@@ -107,22 +107,25 @@ main {
 }
 
 #btn-obtener{
-    background-color: #78C850;
-    padding: .6rem;
-    transition: .2s;
-    text-transform: uppercase;
-    box-shadow: 0 0 1rem rgba(0, 0, 0, .25);
-    font-weight: 600;
+    background-color: #FFCB05; /* Amarillo */
+    color: #003A70; /* Azul */
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
     cursor: pointer;
+    border-radius: 5px;
 
 }
 #btn-obtener:hover{
-    transform: scale(1.1);
-    box-shadow: 0 0 2rem rgba(0, 0, 0, .25);
+    background-color: #003A70; 
+    color: #FFCB05; 
 }
 
 #cantidad{
-    padding: .6rem;
+    padding: .8rem;
+    border: none;
+    border-radius: 5px;
+
 }
 
 #titulo-cantidad{
