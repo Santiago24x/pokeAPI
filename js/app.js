@@ -1,5 +1,5 @@
 import { obtenerUrls } from "./pokeAPI.js";
-import { mockApiPokemons,validarPokemons } from "./mockAPI.js";
+import { mockApiPokemons, validarPokemons } from "./mockAPI.js";
 
 const listaPokemon = document.querySelector("#listaPokemon"); // Lista de pokemones en el DOM
 
@@ -8,12 +8,10 @@ async function obtenerDatosPokemons(cantidad, tipo = null) {
     listaPokemones.innerHTML = '';
 
     const urls = await obtenerUrls(cantidad, tipo);
-    console.log(urls);
+
     const obtenerDatos = async (url) => {
         const respuesta = await fetch(url);
         const datos = await respuesta.json();
-        console.log(datos);
-        //mostrarPokemon(validrPokemons());
         mostrarPokemon(datos);
     };
 
@@ -44,7 +42,6 @@ function mostrarPokemon(data) {
 
     listaPokemon.append(div);
 
-    //!Preguntarle al viejo green el como sabe que div se esta clickando
     div.addEventListener("click", async () => {
         const tipos = data.types.map(type => `<p class="tipo ${type.type.name}">${type.type.name.toUpperCase()}</p>`).join('');
         let img = data.sprites.other["official-artwork"].front_default;
@@ -84,33 +81,71 @@ function mostrarPokemon(data) {
             showConfirmButton: false,
         });
 
-        //hace que el slider cambie el valor en el label
         const cambiosStats = {};
         document.addEventListener('input', async (e) => {
             if (e.target.classList.contains('stat-slider')) {
                 const statSlider = e.target;
                 const statValue = parseInt(statSlider.value);
-                const statName = statSlider.id.split('-')[2];
+                const statNameParts = statSlider.id.split('-');
+                let statName;
+
+                if (statNameParts.length === 4) {
+                    statName = `${statNameParts[2]}-${statNameParts[3]}`;
+                } else {
+                    statName = statNameParts[2];
+                }
                 cambiosStats[statName] = statValue;
 
-                // Actualiza el valor de la estadística en el HTML
                 const statElement = document.getElementById(`stat_${statName}`);
                 statElement.textContent = statValue;
+                
             }
         });
 
         let boton = document.getElementById(data.id);
-        boton.addEventListener('click', () => {
+        boton.addEventListener('click', async () => {
             mockApiPokemons(data.id, cambiosStats);
-        })
+            Swal.fire({
+                icon: 'success',
+                title: 'Cambios guardados',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        });
+
+        const pokemonEnMockAPI = await validarPokemons(data.id);
+
+        if (pokemonEnMockAPI) {
+            const cambiosStats = {
+                "hp": pokemonEnMockAPI.hp,
+                "attack": pokemonEnMockAPI.attack,
+                "defense": pokemonEnMockAPI.defense,
+                "special-attack": pokemonEnMockAPI["special-attack"],
+                "special-defense": pokemonEnMockAPI["special-defense"],
+                "speed": pokemonEnMockAPI.speed
+            };
+
+            for (const statName in cambiosStats) {
+                const statValue = cambiosStats[statName];
+                const statElement = document.getElementById(`stat_${statName}`);
+                const statSlider = document.getElementById(`stat-slider-${statName}`)
+                statElement.textContent = statValue;
+                statSlider.value = statValue;
+                for (let i = 0; i <= statValue; i++) {
+                    setTimeout(() => {
+                        statSlider.value = i;
+                    }, i * 10); // Ajusta la velocidad de animación aquí (en milisegundos)
+                }  
+            }
+        }
     });
 }
-
 let menuTipoPokemon = () => {
     //cargar botones de menu
     let nav = `
             <nav class="nav">
                 <img src="./img/logo.png" alt="Logo Pokédex">
+     
                 <ul class="nav-list">
                     <li class="nav-item"><button class="btn btn-header normal"
                             id="normal">Normal</button></li>
