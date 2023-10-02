@@ -6,27 +6,36 @@ async function obtenerDatosMockAPI() {
     const data = await response.json();
     return data;
 }
-//crear una funcion mas que lo que hace es validar loss datos de pokeapi y cambiarlos por lo que estan
-//modificados en mockapi
-function validarPokemons(datosMockAPI, datosPokeAPI) {
-    //si el id de un pokemon de pokeapi eta en mockapi
-    //reemplazar lo datos de mockapi
 
 
-    //return nuevosDatos;
-    //motrarPokemon(nuevoDatos);
+async function validarPokemons(id) {
+    const datosMockAPI = await obtenerDatosMockAPI();
+    const pokemonEnMockAPI = datosMockAPI.find(pokemon => pokemon.id_pokemon === id);
+
+    return pokemonEnMockAPI;
 }
 
-//ya se valida que no se repita
-async function guardarMockApi(id, stats) {
+
+//Ya se envia y se actualiza el pokemon :)
+async function guardarOActualizarMockApi(id_pokemon, stats) {
     let datos = await obtenerDatosMockAPI();
-    let idExistentes = datos.some(d => d.id_pokemon === id);
+    let pokemon = datos.find(p => p.id_pokemon === id_pokemon);
 
-    if (idExistentes) {
-        console.log("deje la recocha pirobo");
+    if (pokemon) {
+        // Actualizar el pokemon existente
+        const response = await fetch(`${MOCK_API_ENDPOINT}/${pokemon.id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ ...pokemon, ...stats })
+        });
 
+        const data = await response.json();
+        return data;
     } else {
-        stats['id_pokemon'] = id;
+        // Crear un nuevo registro
+        stats['id_pokemon'] = id_pokemon;
         const response = await fetch(MOCK_API_ENDPOINT, {
             method: 'POST',
             headers: {
@@ -39,4 +48,7 @@ async function guardarMockApi(id, stats) {
     }
 }
 
-export { guardarMockApi as mockApiPokemons, obtenerDatosMockAPI, validarPokemons }
+
+
+
+export { guardarOActualizarMockApi as mockApiPokemons, obtenerDatosMockAPI, validarPokemons }

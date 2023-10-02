@@ -1,4 +1,4 @@
-import { validarPokemons, obtenerDatosMockAPI } from "./mockAPI.js";
+//import { validarPokemons, obtenerDatosMockAPI } from "./mockAPI.js";
 
 const API_ENDPOINT = 'https://pokeapi.co/api/v2'; // API de pokemones
 
@@ -15,8 +15,8 @@ async function obtenerUrls(cantidad, tipo = null) {
     // Obtener el json de los pokemones
     const respuesta = await fetch(URL);
     const datos = await respuesta.json();
-    console.log(datos);
-    validarPokemons(obtenerDatosMockAPI(), datos);
+    // console.log(datos);
+    // validarPokemons(obtenerDatosMockAPI(), datos);
 
     // Obtener los urls de los pokemones
     if (tipo) {
