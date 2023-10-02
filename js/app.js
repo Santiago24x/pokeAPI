@@ -1,5 +1,5 @@
 import { obtenerUrls } from "./pokeAPI.js";
-import { mockApiPokemons, validarPokemons } from "./mockAPI.js";
+import { mockApiPokemons, validarPokemons } from "./server.js";
 
 const listaPokemon = document.querySelector("#listaPokemon"); // Lista de pokemones en el DOM
 

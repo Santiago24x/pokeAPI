@@ -1,0 +1,14 @@
+{
+  "pokemon_data": [
+    {
+      "hp": 231,
+      "attack": 247,
+      "defense": 249,
+      "special-attack": 250,
+      "special-defense": 244,
+      "speed": 250,
+      "id_pokemon": 1,
+      "id": 1
+    }
+  ]
+}

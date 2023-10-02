@@ -1,0 +1,16 @@
+{
+  "dependencies": {
+    "json-server": "^0.17.4"
+  },
+  "name": "pokeapi",
+  "description": "Este proyecto consiste en una aplicación web que permite explorar y obtener información sobre diferentes Pokémon según su tipo. A continuación, se detalla la estructura y funcionalidades principales del proyecto.",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "dev": "json-server --watch DB.json --port 5010 --host 127.0.0.1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

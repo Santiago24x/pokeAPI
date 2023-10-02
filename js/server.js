@@ -1,4 +1,4 @@
-const MOCK_API_ENDPOINT = 'https://650b8803dfd73d1fab0a0b24.mockapi.io/pokemon_data';
+const MOCK_API_ENDPOINT = 'http://127.0.0.1:5010/pokemon_data';
 
 
 async function obtenerDatosMockAPI() {
