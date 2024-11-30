@@ -51,7 +51,4 @@ Tienes la capacidad de guardar y actualizar las estadísticas de un Pokémon. La
 
 [Santiago24x](https://github.com/Santiago24x)
 
----
-## Contacto
 
-Para cualquier consulta o sugerencia, no dudes en contactar a [Santiago Márquez ➲](santiagomarquez.it@gmail.com).

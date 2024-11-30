@@ -15,7 +15,7 @@ async function validarPokemons(id) {
     return pokemonEnMockAPI;
 }
 
-
+//Method Put 
 //Ya se envia y se actualiza el pokemon :)
 async function guardarOActualizarMockApi(id_pokemon, stats) {
     let datos = await obtenerDatosMockAPI();

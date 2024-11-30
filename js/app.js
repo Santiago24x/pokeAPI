@@ -3,6 +3,7 @@ import { mockApiPokemons, validarPokemons } from "./mockAPI.js";
 
 const listaPokemon = document.querySelector("#listaPokemon"); // Lista de pokemones en el DOM
 
+
 async function obtenerDatosPokemons(cantidad, tipo = null) {
     const listaPokemones = document.getElementById('listaPokemon');
     listaPokemones.innerHTML = '';
@@ -17,6 +18,8 @@ async function obtenerDatosPokemons(cantidad, tipo = null) {
 
     urls.forEach(obtenerDatos);
 }
+
+
 
 function mostrarPokemon(data) {
     const div = document.createElement("div");
